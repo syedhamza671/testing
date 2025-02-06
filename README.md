@@ -39,16 +39,16 @@ docker build -t auto_labeling .
 
 ### 1️⃣ **For CPU:**
 ```bash
-docker compose run auto_labeling --autolabel "resized_frames/frames/merged_frames" "result"
+docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
 ```
 
 ### 2️⃣ **For GPU:**
 ```bash
-docker compose run --gpus all auto_labeling --autolabel "resized_frames/frames/merged_frames" "result"
+docker compose run --gpus all auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
 ```
 Or without using `docker-compose.yml` GPU configs:
 ```bash
-docker run --rm --gpus all auto_labeling --autolabel "resized_frames/frames/merged_frames" "result"
+docker run --rm --gpus all auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
 ```
 
 ---
@@ -61,8 +61,11 @@ AutoLabeling_Pipeline/
 │── auto_labeling.sh       # Entry script
 │── main.py                # Core processing logic
 │── requirements.txt       # Dependencies
-│── data/                  # Data storage (mapped volume)
-│── output/                # Results directory
+│── videos/                # Downloaded videos
+│── trimmed_videos/        # Trimmed video clips
+│── frames/                # Extracted frames
+│── resized_frames/        # Resized frames
+│── labeled_data/          # Auto-labeled data
 ```
 
 ---
@@ -104,6 +107,60 @@ docker system prune -a
 docker images -f "dangling=true"
 docker rmi $(docker images -f "dangling=true" -q)
 ```
+
+---
+
+## 🚩 Pipeline Commands
+
+### 📥 Download Videos:
+```bash
+docker compose run auto_labeling --download
+```
+*Modify the `VIDEO_URLS` array in `auto_labeling.sh` to add your own URLs.*
+
+### ✂️ Trim Videos:
+```bash
+docker compose run auto_labeling --trim
+```
+*Start and end times are pre-defined in `auto_labeling.sh`. Adjust them as needed.*
+
+### 🖼️ Extract Frames:
+```bash
+docker compose run auto_labeling --extract
+```
+*Extracts frames from the video specified in `auto_labeling.sh`.*
+
+### 📏 Resize Frames:
+```bash
+docker compose run auto_labeling --resize "frames" 640 640
+```
+*Adjust the width and height parameters as needed.*
+
+### 🏷️ Auto-Label Frames:
+```bash
+docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+```
+*Ensure the `resized_frames/frames/1` directory exists with frames to be labeled.*
+
+### ✏️ Annotate Images:
+```bash
+docker compose run auto_labeling --annotate "resized_frames/frames/1" "labeled_data" "annotated_output"
+```
+
+### 🚀 Run the Full Pipeline:
+```bash
+docker compose run auto_labeling --full_pipeline
+```
+*This will execute all the steps. Uncomment the necessary lines in `auto_labeling.sh` to customize the flow.*
+
+---
+
+## ⚙️ Environment Configuration
+- **GPU Selection:**
+  ```bash
+  CUDA_VISIBLE_DEVICES=0 docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+  ```
+- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage.
 
 ---
 
