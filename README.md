@@ -182,4 +182,3 @@ docker compose run auto_labeling --full_pipeline
 
 ## 🙌 Contributions
 Feel free to fork the repo, raise issues, or submit pull requests for improvements.
-
