@@ -5,22 +5,13 @@ The **AutoLabeling Pipeline** automates the process of labeling data for compute
 
 ---
 
-## ⚙️ Prerequisites
-- **Docker** and **Docker Compose** installed
-- **NVIDIA Drivers** for GPU usage (with `nvidia-docker2`)
-- Git for cloning the repository
+## 🛠️ Prerequisites
+Before you begin, ensure you have the following installed:
 
-### Install Docker (if not installed)
-```bash
-sudo apt-get update
-sudo apt-get install -y docker.io docker-compose
-```
-
-### Install NVIDIA Docker (for GPU support)
-```bash
-sudo apt-get install -y nvidia-docker2
-sudo systemctl restart docker
-```
+- **Docker** (latest version)
+- **Docker Compose**
+- **NVIDIA Container Toolkit** (if using GPU acceleration)
+- **Git**
 
 ---
 
@@ -58,6 +49,20 @@ docker compose run --gpus all auto_labeling --autolabel "resized_frames/frames/m
 Or without using `docker-compose.yml` GPU configs:
 ```bash
 docker run --rm --gpus all auto_labeling --autolabel "resized_frames/frames/merged_frames" "result"
+```
+
+---
+
+## 📂 Directory Structure
+```
+AutoLabeling_Pipeline/
+│── docker-compose.yml     # Docker Compose file
+│── Dockerfile             # Image build configuration
+│── auto_labeling.sh       # Entry script
+│── main.py                # Core processing logic
+│── requirements.txt       # Dependencies
+│── data/                  # Data storage (mapped volume)
+│── output/                # Results directory
 ```
 
 ---
@@ -120,11 +125,4 @@ docker rmi $(docker images -f "dangling=true" -q)
 
 ## 🙌 Contributions
 Feel free to fork the repo, raise issues, or submit pull requests for improvements.
-
-## 📜 License
-MIT License (or specify as applicable)
-
----
-
-**Developed by [Your Name]**
 
