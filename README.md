@@ -24,39 +24,24 @@ cd AutoLabeling_Pipeline
 ---
 
 ## 🐳 Building the Docker Image
-```bash
-docker compose build
-```
 
-Alternatively:
 ```bash
 docker build -t auto_labeling .
 ```
-
-Another way to build the image:
-```bash
-docker build -t label .
-```
-
 ---
 
 ## ⚡ Running the AutoLabeling Pipeline
 
 ### 1️⃣ **For CPU:**
 ```bash
-docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+docker compose run auto_labeling --autolabel 
 ```
 
 ### 2️⃣ **For GPU:**
 ```bash
-docker compose run --gpus all auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+docker compose run --gpus all auto_labeling --autolabel
 ```
-Or without using `docker-compose.yml` GPU configs:
-```bash
-docker run --rm --gpus all auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
-```
-
-To run Docker with X11 forwarding:
+without using `docker-compose.yml` GPU configs and To run Docker with X11 forwarding:
 ```bash
 xhost +local:docker
 sudo docker run --rm \
@@ -155,19 +140,22 @@ docker compose run auto_labeling --extract
 
 ### 📏 Resize Frames:
 ```bash
-docker compose run auto_labeling --resize "frames" 640 640
+docker compose run auto_labeling --resize
 ```
 *Adjust the width and height parameters as needed.*
 
 ### 🌂 Auto-Label Frames:
 ```bash
-docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+docker compose run auto_labeling --autolabel 
 ```
 *Ensure the `resized_frames/frames/1` directory exists with frames to be labeled.*
 
 ### ✏️ Annotate Images:
+sudo chown -R $(whoami):$(whoami) /
+
 ```bash
-docker compose run auto_labeling --annotate "resized_frames/frames/1" "labeled_data" "annotated_output"
+sudo chown -R $(whoami):$(whoami) /
+docker compose run auto_labeling --annotate 
 ```
 
 ### 🚀 Run the Full Pipeline:
@@ -181,9 +169,9 @@ docker compose run auto_labeling --full_pipeline
 ## ⚙️ Environment Configuration
 - **GPU Selection:**
   ```bash
-  CUDA_VISIBLE_DEVICES=0 docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
+  Cdocker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
   ```
-- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage.
+- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage dockerfile.yml.
 
 ---
 
