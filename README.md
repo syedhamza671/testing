@@ -33,6 +33,11 @@ Alternatively:
 docker build -t auto_labeling .
 ```
 
+Another way to build the image:
+```bash
+docker build -t label .
+```
+
 ---
 
 ## ⚡ Running the AutoLabeling Pipeline
@@ -51,15 +56,33 @@ Or without using `docker-compose.yml` GPU configs:
 docker run --rm --gpus all auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
 ```
 
+To run Docker with X11 forwarding:
+```bash
+xhost +local:docker
+sudo docker run --rm \
+   -v $(pwd)/videos:/app/videos \
+   -v $(pwd)/trimmed_videos:/app/trimmed_videos \
+   -v $(pwd)/frames:/app/frames \
+   -v $(pwd)/resized_frames:/app/resized_frames \
+   -v $(pwd)/labeled_data:/app/labeled_data \
+   -v $(pwd)/auto_labeling.sh:/app/auto_labeling.sh \
+   -v /home/hamza:/app/home \
+   -e DISPLAY=$DISPLAY \
+   -v /tmp/.X11-unix:/tmp/.X11-unix \
+   -p 8000:8000 \
+   label --full_pipeline
+```
+
 ---
 
-## 📂 Directory Structure
+## 🐂 Directory Structure
 ```
 AutoLabeling_Pipeline/
 │── docker-compose.yml     # Docker Compose file
 │── Dockerfile             # Image build configuration
 │── auto_labeling.sh       # Entry script
 │── main.py                # Core processing logic
+│── model_selection.py     # Model selection logic
 │── requirements.txt       # Dependencies
 │── videos/                # Downloaded videos
 │── trimmed_videos/        # Trimmed video clips
@@ -95,7 +118,7 @@ docker compose down --remove-orphans
 
 ---
 
-## 🗑️ Cleaning Up Docker Resources
+## 🛢️ Cleaning Up Docker Resources
 
 ### Remove Unused Containers, Networks, Images:
 ```bash
@@ -124,7 +147,7 @@ docker compose run auto_labeling --trim
 ```
 *Start and end times are pre-defined in `auto_labeling.sh`. Adjust them as needed.*
 
-### 🖼️ Extract Frames:
+### 🎮 Extract Frames:
 ```bash
 docker compose run auto_labeling --extract
 ```
@@ -136,7 +159,7 @@ docker compose run auto_labeling --resize "frames" 640 640
 ```
 *Adjust the width and height parameters as needed.*
 
-### 🏷️ Auto-Label Frames:
+### 🌂 Auto-Label Frames:
 ```bash
 docker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
 ```
@@ -176,9 +199,11 @@ docker compose run auto_labeling --full_pipeline
 - **Interactive Debugging:**
   ```bash
   docker exec -it <container_id> /bin/bash
+  sudo chown -R $(whoami):$(whoami) /
   ```
 
 ---
 
 ## 🙌 Contributions
 Feel free to fork the repo, raise issues, or submit pull requests for improvements.
+
