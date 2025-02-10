@@ -32,12 +32,8 @@ docker build -t auto_labeling .
 
 ## ⚡ Running the AutoLabeling Pipeline
 
-### 1️⃣ **For CPU:**
-```bash
-docker compose run auto_labeling --autolabel 
-```
+### 1️⃣ **It will use GPU if available othervise it will switch to CPU itself:**
 
-### 2️⃣ **For GPU:**
 ```bash
 docker compose run --gpus all auto_labeling --autolabel
 ```
@@ -51,11 +47,13 @@ sudo docker run --rm \
    -v $(pwd)/resized_frames:/app/resized_frames \
    -v $(pwd)/labeled_data:/app/labeled_data \
    -v $(pwd)/auto_labeling.sh:/app/auto_labeling.sh \
-   -v /home/hamza:/app/home \
+   -v $(pwd)/pipeline/model_selector.py:/app/pipeline/model_selector.py \
+   -v $(pwd)/pipeline/helper.py:/app/pipeline/helper.py \
+   -v $(pwd)/pipeline/tool.py:/app/pipeline/tool.py \
    -e DISPLAY=$DISPLAY \
    -v /tmp/.X11-unix:/tmp/.X11-unix \
    -p 8000:8000 \
-   label --full_pipeline
+   auto_labeling --full_pipeline
 ```
 
 ---
@@ -63,17 +61,20 @@ sudo docker run --rm \
 ## 🐂 Directory Structure
 ```
 AutoLabeling_Pipeline/
-│── docker-compose.yml     # Docker Compose file
-│── Dockerfile             # Image build configuration
-│── auto_labeling.sh       # Entry script
-│── main.py                # Core processing logic
-│── model_selection.py     # Model selection logic
-│── requirements.txt       # Dependencies
-│── videos/                # Downloaded videos
-│── trimmed_videos/        # Trimmed video clips
-│── frames/                # Extracted frames
-│── resized_frames/        # Resized frames
-│── labeled_data/          # Auto-labeled data
+├── docker-compose.yml       # Docker Compose file
+├── Dockerfile               # Image build configuration
+├── auto_labeling.sh         # Entry script
+├── pipeline/                # Pipeline scripts
+│   ├── main.py              # Core processing logic
+│   ├── model_selector.py    # Model selection logic
+│   ├── tool.py              # Helper tools
+│   └── helper.py            # Additional helpers
+├── requirements.txt         # Dependencies
+├── videos/                  # Downloaded videos
+├── trimmed_videos/          # Trimmed video clips
+├── frames/                  # Extracted frames
+├── resized_frames/          # Resized frames
+└── labeled_data/            # Auto-labeled data
 ```
 
 ---
@@ -120,45 +121,16 @@ docker rmi $(docker images -f "dangling=true" -q)
 
 ## 🚩 Pipeline Commands
 
-### 📥 Download Videos:
-```bash
-docker compose run auto_labeling --download
-```
-*Modify the `VIDEO_URLS` array in `auto_labeling.sh` to add your own URLs.*
+### Available Options:
+- **Download Videos**
+- **Trim Videos**
+- **Extract Frames**
+- **Resize Frames**
+- **Auto-Label Frames**
+- **Annotate Images**
+- **Run the Full Pipeline**
 
-### ✂️ Trim Videos:
-```bash
-docker compose run auto_labeling --trim
-```
-*Start and end times are pre-defined in `auto_labeling.sh`. Adjust them as needed.*
-
-### 🎮 Extract Frames:
-```bash
-docker compose run auto_labeling --extract
-```
-*Extracts frames from the video specified in `auto_labeling.sh`.*
-
-### 📏 Resize Frames:
-```bash
-docker compose run auto_labeling --resize
-```
-*Adjust the width and height parameters as needed.*
-
-### 🌂 Auto-Label Frames:
-```bash
-docker compose run auto_labeling --autolabel 
-```
-*Ensure the `resized_frames/frames/1` directory exists with frames to be labeled.*
-
-### ✏️ Annotate Images:
-sudo chown -R $(whoami):$(whoami) /
-
-```bash
-sudo chown -R $(whoami):$(whoami) /
-docker compose run auto_labeling --annotate 
-```
-
-### 🚀 Run the Full Pipeline:
+### 🚀 Example: Run the Full Pipeline
 ```bash
 docker compose run auto_labeling --full_pipeline
 ```
@@ -168,28 +140,12 @@ docker compose run auto_labeling --full_pipeline
 
 ## ⚙️ Environment Configuration
 - **GPU Selection:**
-- Set `CUDA_VISIBLE_DEVICES=0` to use gpu in dockerfile.yml.
-- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage in dockerfile.yml.
-
----
-
-## 🚩 Troubleshooting
-- **Permission Issues:**
-  ```bash
-  sudo chmod 777 -R /path/to/directory
-  ```
-- **Check Logs:**
-  ```bash
-  docker logs <container_id>
-  ```
-- **Interactive Debugging:**
-  ```bash
-  docker exec -it <container_id> /bin/bash
+  - Set `CUDA_VISIBLE_DEVICES=0` to use GPU in `docker-compose.yml`.
+  - Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage in `docker-compose.yml`.
+- **GPU Selection:**
+  - To transfer ownership of all the directories and files created via Docker.
+ ```bash
   sudo chown -R $(whoami):$(whoami) /
   ```
 
----
-
-## 🙌 Contributions
-Feel free to fork the repo, raise issues, or submit pull requests for improvements.
 
