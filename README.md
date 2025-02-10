@@ -168,9 +168,7 @@ docker compose run auto_labeling --full_pipeline
 
 ## ⚙️ Environment Configuration
 - **GPU Selection:**
-  ```bash
-  Cdocker compose run auto_labeling --autolabel "resized_frames/frames/1" "labeled_data"
-  ```
+- Set `CUDA_VISIBLE_DEVICES=0` to force CPU usage dockerfile.yml.
 - Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage dockerfile.yml.
 
 ---
