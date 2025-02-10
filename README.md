@@ -32,11 +32,14 @@ docker build -t auto_labeling .
 
 ## ⚡ Running the AutoLabeling Pipeline
 
-### 1️⃣ **It will use GPU if available othervise it will switch to CPU itself:**
+*It will Automatically switched to GPU if available othervise it'll use CPU*
+
+### 1️⃣ **Using Docker Compose (with `docker-compose.yml`):**
 
 ```bash
-docker compose run --gpus all auto_labeling --autolabel
+docker compose run auto_labeling --autolabel
 ```
+### 2️⃣ **Using Docker (without `docker-compose.yml`):**
 without using `docker-compose.yml` GPU configs and To run Docker with X11 forwarding:
 ```bash
 xhost +local:docker
