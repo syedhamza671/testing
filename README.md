@@ -168,8 +168,8 @@ docker compose run auto_labeling --full_pipeline
 
 ## ⚙️ Environment Configuration
 - **GPU Selection:**
-- Set `CUDA_VISIBLE_DEVICES=0` to force CPU usage dockerfile.yml.
-- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage dockerfile.yml.
+- Set `CUDA_VISIBLE_DEVICES=0` to use gpu in dockerfile.yml.
+- Set `CUDA_VISIBLE_DEVICES=""` to force CPU usage in dockerfile.yml.
 
 ---
 
